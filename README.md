@@ -40,9 +40,11 @@ finished report is ever auto-emitted. Passing cases are labelled
   synthetic schematic SVGs drawn for this demo (abstract lung/heart shapes,
   labelled SYNTHETIC DEMO IMAGE). No images were copied from the course
   presentation.
-- Uploaded files, if a visitor tries one, are processed locally in the
-  browser only, are never sent anywhere, and cannot produce a medical
-  finding in this demo — they route to mandatory review.
+- Uploaded files are processed locally in the browser only, are never
+  sent anywhere, and cannot produce a medical finding in this demo —
+  they run through the pipeline animation, appear in All Reports
+  alongside Demo A, B and C, and route to mandatory review with no
+  finding determined.
 
 ## Demo cases
 
@@ -101,8 +103,7 @@ Option 2 — GitHub Actions (also included):
   deploys it. Enabling Pages with source **GitHub Actions** uses that
   workflow instead of the branch/folder source.
 
-This demo is **not yet pushed or live** until the parent agent verifies
-these files and pushes them.
+Live demo (verified 2026-10-26): https://durvachhabria.github.io/chest-xray-report-generator/
 
 ## Safety, dataset attribution, and cost
 
