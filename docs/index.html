@@ -3,64 +3,73 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Automated Radiology Report Generation — PLCM Coursework Demo</title>
+<title>Automated Radiology Report Generation from Chest X-Rays — PLCM Coursework Demo</title>
 <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
 <header>
   <div class="banner" id="labelLineTop">NOT FOR CLINICAL USE — AI-generated draft, requires radiologist review before any clinical use</div>
-  <h1>Automated Radiology Report Generation from Chest X-Rays</h1>
-  <p class="sub">Vision-language pipeline demo for BTECH CAP 501 — Project Life Cycle Management, ATLAS SkillTech University. Coursework prototype only. This browser demo is a transparent simulation, not a trained clinical model, and it never produces a final report.</p>
-  <p class="muted small">Team: Gunn Mulchandani, Siddhant Amin, Vaishnavi Singh, Durva Chhabria &nbsp;|&nbsp; Mentor: Amrita Banerjee &nbsp;|&nbsp; Report: 15 September 2026 &nbsp;|&nbsp; Dataset cited: IU X-Ray</p>
+  <p class="eyebrow">PLCM Coursework Demo • BTECH CAP 501</p>
+  <h1>Automated Radiology Report <span>Generation</span> from Chest X-Rays</h1>
+  <p class="sub">A vision-language pipeline demo for Project Life Cycle Management at ATLAS SkillTech University. Coursework prototype only — this browser demo is a transparent simulation, not a trained clinical model, and it never produces a final report.</p>
+  <div class="hero-pills">
+    <span class="pill">Team: Gunn Mulchandani • Siddhant Amin • Vaishnavi Singh • Durva Chhabria</span>
+    <span class="pill">Mentor: Amrita Banerjee</span>
+    <span class="pill">Report: 15 September 2026</span>
+    <span class="pill">Dataset cited: IU X-Ray</span>
+  </div>
 </header>
 
 <main>
-  <section class="card">
+  <section class="card" id="studio">
     <h2>Try the demo</h2>
-    <p class="muted">Choose a synthetic case. No real patient images are used anywhere on this page. Every image below is a synthetic schematic I drew as abstract lung and heart shapes.</p>
-    <div class="casebar">
+    <p class="lead">Choose a synthetic case, or upload an image below. Uploaded images stay in your browser only — they are not sent anywhere and no finding is determined from them.</p>
+    <div class="casebar" id="casebar">
       <button data-case="A" class="active">Demo A — No acute finding</button>
       <button data-case="B">Demo B — Enlarged cardiac silhouette</button>
       <button data-case="C">Demo C — Hallucination trap</button>
+      <button data-case="U" id="uploadCaseBtn" style="display:none">Uploaded image — Review only</button>
     </div>
 
     <div id="output" class="fade">
       <div class="grid">
-        <div>
-          <div class="schematic">
+        <div class="viewer">
+          <div id="schematicWrap">
             <svg viewBox="0 0 320 340" role="img" aria-label="Synthetic schematic chest illustration, not a patient X-ray">
               <defs>
                 <radialGradient id="heatGrad" cx="50%" cy="50%" r="50%">
-                  <stop offset="0%" stop-color="#f87171" stop-opacity="0.9"></stop>
-                  <stop offset="45%" stop-color="#f59e0b" stop-opacity="0.55"></stop>
-                  <stop offset="100%" stop-color="#f59e0b" stop-opacity="0"></stop>
+                  <stop offset="0%" stop-color="#be123c" stop-opacity="0.85"></stop>
+                  <stop offset="45%" stop-color="#f4728f" stop-opacity="0.5"></stop>
+                  <stop offset="100%" stop-color="#f4728f" stop-opacity="0"></stop>
                 </radialGradient>
               </defs>
-              <rect x="10" y="10" width="300" height="320" rx="18" fill="#0a1428" stroke="#24344f"></rect>
-              <path d="M95 55 Q160 30 225 55 L240 110 Q245 200 225 285 Q160 310 95 285 Q75 200 80 110 Z" fill="none" stroke="#7dd3fc" stroke-width="2"></path>
-              <!-- abstract lungs -->
-              <ellipse cx="125" cy="165" rx="38" ry="78" fill="#1e3a5f" stroke="#93c5fd" stroke-width="2"></ellipse>
-              <ellipse cx="195" cy="165" rx="38" ry="78" fill="#1e3a5f" stroke="#93c5fd" stroke-width="2"></ellipse>
-              <!-- abstract heart -->
-              <path d="M160 200 Q135 175 120 200 Q120 230 160 255 Q200 230 200 200 Q185 175 160 200 Z" fill="#7f1d1d" stroke="#fca5a5" stroke-width="2"></path>
-              <!-- ribs, schematic only -->
-              <line x1="95" y1="120" x2="225" y2="120" stroke="#334155" stroke-width="1"></line>
-              <line x1="90" y1="165" x2="230" y2="165" stroke="#334155" stroke-width="1"></line>
-              <line x1="95" y1="210" x2="225" y2="210" stroke="#334155" stroke-width="1"></line>
-              <text x="160" y="32" text-anchor="middle" fill="#9fb0c8" font-size="11">SYNTHETIC DEMO IMAGE</text>
-              <text x="125" y="165" text-anchor="middle" fill="#e8eef8" font-size="11">LUNG</text>
-              <text x="195" y="165" text-anchor="middle" fill="#e8eef8" font-size="11">LUNG</text>
-              <text x="160" y="275" text-anchor="middle" fill="#9fb0c8" font-size="11">HEART</text>
+              <rect x="10" y="10" width="300" height="320" rx="18" fill="#ffffff" stroke="#f2c4cf"></rect>
+              <path d="M95 55 Q160 30 225 55 L240 110 Q245 200 225 285 Q160 310 95 285 Q75 200 80 110 Z" fill="none" stroke="#f4728f" stroke-width="2"></path>
+              <ellipse cx="125" cy="165" rx="38" ry="78" fill="#ffe4ea" stroke="#f4728f" stroke-width="2"></ellipse>
+              <ellipse cx="195" cy="165" rx="38" ry="78" fill="#ffe4ea" stroke="#f4728f" stroke-width="2"></ellipse>
+              <path d="M160 200 Q135 175 120 200 Q120 230 160 255 Q200 230 200 200 Q185 175 160 200 Z" fill="#be123c" stroke="#9f1239" stroke-width="2"></path>
+              <line x1="95" y1="120" x2="225" y2="120" stroke="#f2c4cf" stroke-width="1"></line>
+              <line x1="90" y1="165" x2="230" y2="165" stroke="#f2c4cf" stroke-width="1"></line>
+              <line x1="95" y1="210" x2="225" y2="210" stroke="#f2c4cf" stroke-width="1"></line>
+              <text x="160" y="32" text-anchor="middle" fill="#7d4c5c" font-size="11">SYNTHETIC DEMO IMAGE</text>
+              <text x="125" y="165" text-anchor="middle" fill="#3d1220" font-size="11">LUNG</text>
+              <text x="195" y="165" text-anchor="middle" fill="#3d1220" font-size="11">LUNG</text>
+              <text x="160" y="275" text-anchor="middle" fill="#7d4c5c" font-size="11">HEART</text>
               <g id="heatmap" class="heat">
                 <circle cx="150" cy="150" r="72" fill="url(#heatGrad)"></circle>
-                <circle cx="150" cy="150" r="34" fill="#f87171" opacity="0.55"></circle>
+                <circle cx="150" cy="150" r="34" fill="#be123c" opacity="0.5"></circle>
               </g>
             </svg>
-            <p class="small muted">SYNTHETIC DEMO IMAGE — abstract schematic, not a patient X-ray. No real chest X-ray is shown or used.</p>
+          </div>
+          <div id="uploadedWrap" style="display:none">
+            <img id="uploadedImg" alt="Uploaded image preview, shown locally only and not analysed">
+          </div>
+          <p class="small muted" id="imageCaption">SYNTHETIC DEMO IMAGE — abstract schematic, not a patient X-ray. No real chest X-ray is shown or used.</p>
+          <div class="viewer-tools">
             <button id="heatToggle" class="secondary">Toggle Grad-CAM heatmap</button>
             <span id="heatLabel" class="tag">Heatmap: OFF</span>
-            <p id="gradcamNote" class="small muted"></p>
           </div>
+          <p id="gradcamNote" class="small muted"></p>
         </div>
 
         <div>
@@ -76,13 +85,14 @@
           </div>
 
           <h3>Pipeline</h3>
+          <div class="pipe-track"><div class="pipe-fill" id="pipeFill"></div></div>
           <div class="pipeline" id="pipeline"></div>
           <div id="checks"></div>
 
           <h3>Self-consistency — 5 decodings</h3>
-          <p class="small muted">Agreement = most-common decoding ÷ 5. Score shown as a decimal below.</p>
+          <p class="small muted" id="decodingNote">Agreement = most-common decoding ÷ 5. Score shown as a decimal below.</p>
           <p id="decodings"></p>
-          <p>Self-consistency score: <b id="scoreNum2">0.00</b> (threshold 0.60)</p>
+          <p id="scoreLine">Self-consistency score: <b id="scoreNum2">0.00</b> (threshold 0.60)</p>
 
           <h3>Entities</h3>
           <div id="entityList"></div>
@@ -93,13 +103,33 @@
         </div>
       </div>
     </div>
+  </section>
 
-    <div class="upload">
-      <h3>Try your own image? (local only, no analysis)</h3>
-      <p class="small muted">Uploads are processed locally in the browser only and are never sent anywhere. This demo cannot determine a finding from an uploaded image.</p>
+  <section class="card" id="uploadSection">
+    <h2>Upload an image</h2>
+    <p class="lead">Drop an image here or choose a file. It is previewed locally only, runs through the demo pipeline animation, and is added to All Reports below — as a review-only case, with no finding determined.</p>
+    <div class="upload" id="dropzone">
+      <p><b>Drag &amp; drop an image here</b></p>
+      <p class="small muted">PNG, JPG, WebP or similar. The file never leaves this browser.</p>
+      <div class="upload-row">
+        <button type="button" class="primary" id="chooseBtn">Choose image</button>
+        <button type="button" class="secondary" id="clearUpload" style="display:none">Clear upload</button>
+      </div>
       <input type="file" id="upload" accept="image/*">
-      <p id="uploadMsg" class="small"></p>
+      <div class="upload-preview" id="uploadPreview">
+        <img id="uploadThumb" alt="Uploaded image thumbnail">
+        <div>
+          <p id="uploadMeta" class="small" style="margin:0"></p>
+          <p id="uploadMsg" class="small muted" style="margin:6px 0 0"></p>
+        </div>
+      </div>
     </div>
+  </section>
+
+  <section class="card" id="reports">
+    <h2>All reports</h2>
+    <p class="lead">Every case in one place. Tap a card to open it in the studio above. Only the synthetic demos carry draft impressions — an uploaded image never gets a finding here.</p>
+    <div class="reports" id="reportCards"></div>
   </section>
 
   <section class="card">
