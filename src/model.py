@@ -185,6 +185,35 @@ def generate_report(case_id):
     }
 
 
+def generate_upload_report(filename):
+    """Report for a locally uploaded image: never analysed, never a finding.
+
+    Uploads are not run through a decoder and have no Grad-CAM map in this
+    demo, so every check is unmet and the case routes to mandatory review.
+    """
+    return {
+        "case_id": "U",
+        "title": f"Uploaded image \u2014 {filename} (review only)",
+        "label": NOT_FOR_CLINICAL_USE,
+        "image_label": "UPLOADED IMAGE \u2014 preview only, local to the browser, not analysed",
+        "draft_impression": (
+            "No finding determined from this upload. This demo does not "
+            "analyse uploaded images and does not run a trained model on them."
+        ),
+        "final_report": None,
+        "auto_emitted": False,
+        "auto_emitted_as_finished_report": False,
+        "status": "MANDATORY RADIOLOGIST REVIEW",
+        "routed_to_mandatory_review": True,
+        "entity_check": {"passed": False, "supported": [], "unsupported": ["Finding from uploaded image"]},
+        "self_consistency_score": None,
+        "self_consistency_threshold": SELF_CONSISTENCY_THRESHOLD,
+        "self_consistency_decodings": [],
+        "gradcam_check": {"passed": False, "region": "not_computed", "target": "not_computed"},
+        "model_version": MODEL_VERSION,
+    }
+
+
 def model_info():
     """Model-info panel data (FR5). Honest demo distinction included."""
     return {
