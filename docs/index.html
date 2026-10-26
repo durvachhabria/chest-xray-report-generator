@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Automated Radiology Report Generation — PLCM Coursework Demo</title>
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<header>
+  <div class="banner" id="labelLineTop">NOT FOR CLINICAL USE — AI-generated draft, requires radiologist review before any clinical use</div>
+  <h1>Automated Radiology Report Generation from Chest X-Rays</h1>
+  <p class="sub">Vision-language pipeline demo for BTECH CAP 501 — Project Life Cycle Management, ATLAS SkillTech University. Coursework prototype only. This browser demo is a transparent simulation, not a trained clinical model, and it never produces a final report.</p>
+  <p class="muted small">Team: Gunn Mulchandani, Siddhant Amin, Vaishnavi Singh, Durva Chhabria &nbsp;|&nbsp; Mentor: Amrita Banerjee &nbsp;|&nbsp; Report: 15 September 2026 &nbsp;|&nbsp; Dataset cited: IU X-Ray</p>
+</header>
+
+<main>
+  <section class="card">
+    <h2>Try the demo</h2>
+    <p class="muted">Choose a synthetic case. No real patient images are used anywhere on this page. Every image below is a synthetic schematic I drew as abstract lung and heart shapes.</p>
+    <div class="casebar">
+      <button data-case="A" class="active">Demo A — No acute finding</button>
+      <button data-case="B">Demo B — Enlarged cardiac silhouette</button>
+      <button data-case="C">Demo C — Hallucination trap</button>
+    </div>
+
+    <div id="output" class="fade">
+      <div class="grid">
+        <div>
+          <div class="schematic">
+            <svg viewBox="0 0 320 340" role="img" aria-label="Synthetic schematic chest illustration, not a patient X-ray">
+              <defs>
+                <radialGradient id="heatGrad" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#f87171" stop-opacity="0.9"></stop>
+                  <stop offset="45%" stop-color="#f59e0b" stop-opacity="0.55"></stop>
+                  <stop offset="100%" stop-color="#f59e0b" stop-opacity="0"></stop>
+                </radialGradient>
+              </defs>
+              <rect x="10" y="10" width="300" height="320" rx="18" fill="#0a1428" stroke="#24344f"></rect>
+              <path d="M95 55 Q160 30 225 55 L240 110 Q245 200 225 285 Q160 310 95 285 Q75 200 80 110 Z" fill="none" stroke="#7dd3fc" stroke-width="2"></path>
+              <!-- abstract lungs -->
+              <ellipse cx="125" cy="165" rx="38" ry="78" fill="#1e3a5f" stroke="#93c5fd" stroke-width="2"></ellipse>
+              <ellipse cx="195" cy="165" rx="38" ry="78" fill="#1e3a5f" stroke="#93c5fd" stroke-width="2"></ellipse>
+              <!-- abstract heart -->
+              <path d="M160 200 Q135 175 120 200 Q120 230 160 255 Q200 230 200 200 Q185 175 160 200 Z" fill="#7f1d1d" stroke="#fca5a5" stroke-width="2"></path>
+              <!-- ribs, schematic only -->
+              <line x1="95" y1="120" x2="225" y2="120" stroke="#334155" stroke-width="1"></line>
+              <line x1="90" y1="165" x2="230" y2="165" stroke="#334155" stroke-width="1"></line>
+              <line x1="95" y1="210" x2="225" y2="210" stroke="#334155" stroke-width="1"></line>
+              <text x="160" y="32" text-anchor="middle" fill="#9fb0c8" font-size="11">SYNTHETIC DEMO IMAGE</text>
+              <text x="125" y="165" text-anchor="middle" fill="#e8eef8" font-size="11">LUNG</text>
+              <text x="195" y="165" text-anchor="middle" fill="#e8eef8" font-size="11">LUNG</text>
+              <text x="160" y="275" text-anchor="middle" fill="#9fb0c8" font-size="11">HEART</text>
+              <g id="heatmap" class="heat">
+                <circle cx="150" cy="150" r="72" fill="url(#heatGrad)"></circle>
+                <circle cx="150" cy="150" r="34" fill="#f87171" opacity="0.55"></circle>
+              </g>
+            </svg>
+            <p class="small muted">SYNTHETIC DEMO IMAGE — abstract schematic, not a patient X-ray. No real chest X-ray is shown or used.</p>
+            <button id="heatToggle" class="secondary">Toggle Grad-CAM heatmap</button>
+            <span id="heatLabel" class="tag">Heatmap: OFF</span>
+            <p id="gradcamNote" class="small muted"></p>
+          </div>
+        </div>
+
+        <div>
+          <h3 id="caseTitle">Demo A — No acute finding (synthetic normal)</h3>
+          <p><b>Draft impression (never a final report):</b></p>
+          <p id="impression"></p>
+          <p class="small" id="labelLine"></p>
+
+          <div class="counters">
+            <div class="stat"><b id="scoreNum">0%</b><span class="small muted">Self-consistency</span></div>
+            <div class="stat"><b id="entityNum">—</b><span class="small muted">Entities supported</span></div>
+            <div class="stat"><b id="gradNum">—</b><span class="small muted">Grad-CAM anatomy</span></div>
+          </div>
+
+          <h3>Pipeline</h3>
+          <div class="pipeline" id="pipeline"></div>
+          <div id="checks"></div>
+
+          <h3>Self-consistency — 5 decodings</h3>
+          <p class="small muted">Agreement = most-common decoding ÷ 5. Score shown as a decimal below.</p>
+          <p id="decodings"></p>
+          <p>Self-consistency score: <b id="scoreNum2">0.00</b> (threshold 0.60)</p>
+
+          <h3>Entities</h3>
+          <div id="entityList"></div>
+
+          <div id="status" class="status ready">DRAFT READY FOR REVIEW</div>
+          <p id="finished"></p>
+          <p class="small muted">Provenance: synthetic demo case, rule/template simulation (model v0.1-demo). No trained EfficientNet / BioViL-T / ClinicalBERT / GPT-2 model is running in this browser, and no BLEU / ROUGE / CheXpert score is claimed for this demo.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="upload">
+      <h3>Try your own image? (local only, no analysis)</h3>
+      <p class="small muted">Uploads are processed locally in the browser only and are never sent anywhere. This demo cannot determine a finding from an uploaded image.</p>
+      <input type="file" id="upload" accept="image/*">
+      <p id="uploadMsg" class="small"></p>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Pipeline explainer</h2>
+    <p><b>Encode → Decode → Check 1 Entity → Check 2 Self-consistency → Check 3 Grad-CAM → Route.</b> In the full report, a visual encoder (EfficientNet or BioViL-T) feeds a text decoder (ClinicalBERT or GPT-2). In this browser demo, that trained pipeline is replaced by an honest, transparent simulation: template drafts for three synthetic cases, plus the same three checks and the same routing rule. If any check fails, the report is never auto-emitted as a finished report — it goes to mandatory radiologist review.</p>
+  </section>
+
+  <section class="card" id="model-info">
+    <h2>Model Info (FR5)</h2>
+    <ul>
+      <li><b>Model version:</b> v0.1-demo — transparent rule/template simulation, NOT a trained EfficientNet / BioViL-T / ClinicalBERT / GPT-2 model running in this browser.</li>
+      <li><b>Dataset:</b> IU X-Ray — prototype simulation, not trained on it in this browser demo. IU X-Ray is cited from Indiana University / NIH Open-i; no dataset files are redistributed here.</li>
+      <li><b>Calibration / thresholds:</b> Self-consistency threshold 0.60 across 5 decodings; entity check requires every named entity to be supported; Grad-CAM check requires attention inside the relevant anatomy.</li>
+      <li><b>Routing:</b> Any failed check → MANDATORY RADIOLOGIST REVIEW; no finished report is auto-emitted.</li>
+      <li><b>Label:</b> NOT FOR CLINICAL USE — AI-generated draft, requires radiologist review before any clinical use.</li>
+      <li><b>Cost:</b> ₹0 for this demo (no paid services, no external CDN).</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h2>Safety &amp; Limits</h2>
+    <ul>
+      <li>Coursework prototype only. This is not a clinical product, diagnosis, or validated medical device.</li>
+      <li>Do not use any draft on this page for patient care. A radiologist must review every draft before any clinical use.</li>
+      <li>Synthetic schematics only — no real patient images, and no images copied from the course presentation.</li>
+      <li>The demo does not measure BLEU, ROUGE, or CheXpert scores, and it does not claim the report's target thresholds were achieved.</li>
+      <li>Uploaded files are not analysed, not sent anywhere, and cannot produce a medical finding in this demo.</li>
+      <li>Known limits: three synthetic cases only; template drafts, not learned generation; Grad-CAM is a simulated region, not a computed gradient map from a trained encoder.</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h2>How this maps to the report</h2>
+    <h3>Functional requirements</h3>
+    <ul>
+      <li><b>FR1:</b> Accept an image (demo cases, or a local upload routed to review) and return a draft impression, entity flag, and self-consistency score.</li>
+      <li><b>FR2:</b> Entity-consistency check flags each unsupported entity by name — see Demo C, where pneumothorax is flagged NOT SUPPORTED.</li>
+      <li><b>FR3:</b> A hallucination flag or self-consistency below threshold routes to mandatory review and is never returned as a final, unreviewed result.</li>
+      <li><b>FR4:</b> Every generated output carries the provenance / not-for-clinical-use label, shown in the header, in every case output, and in the Python output.</li>
+      <li><b>FR5:</b> Model Info panel above (version, dataset, calibration, not-for-clinical-use statement).</li>
+      <li><b>FR6:</b> This static demo logs no images and no user data; a full service would log image statistics and metadata only, never raw images.</li>
+    </ul>
+    <h3>Non-functional requirements (report targets, NOT demo claims)</h3>
+    <p class="muted">The report's targets — for example BLEU-4, ROUGE-L, ClinicalBERT-Score, CheXpert-F1, hallucination-rate ceiling, latency, and reproducibility — are design targets for a trained system. This demo does not claim to meet them, and no score is shown as achieved.</p>
+    <h3>Life cycle — CRISP-DM (primary, with TDSP deployment discipline)</h3>
+    <ul>
+      <li>Business Understanding: clinical workload problem, non-clinical scope boundary, stakeholder map.</li>
+      <li>Data Understanding: IU X-Ray exploration, finding frequency, image quality, frontal vs lateral coverage.</li>
+      <li>Data Preparation: de-identification review, CheXpert labelling, patient-level splits.</li>
+      <li>Modelling: encoder/decoder fine-tuning in the full project; template simulation in this demo.</li>
+      <li>Evaluation: three-check hallucination detection, plus metric evaluation in the full project.</li>
+      <li>Deployment: GitHub Pages for this demo (docs/ folder); Docker / FastAPI service in the full project design, with CI gates and drift monitoring.</li>
+    </ul>
+    <pre>Input (synthetic schematic / local upload)
+  → Encode (simulated) → Decode (template draft)
+  → Check 1: Entity consistency
+  → Check 2: Self-consistency (5 decodings)
+  → Check 3: Grad-CAM grounding (simulated region)
+  → Route: DRAFT READY FOR REVIEW
+             or MANDATORY RADIOLOGIST REVIEW
+  → No finished report is auto-emitted</pre>
+  </section>
+</main>
+
+<footer>
+  <p>NOT FOR CLINICAL USE — AI-generated draft, requires radiologist review before any clinical use. Dataset attribution: IU X-Ray (Indiana University / NIH Open-i); CheXpert labeller (Stanford) cited, not redistributed. Cost: ₹0.</p>
+</footer>
+<script src="./app.js"></script>
+</body>
+</html>
