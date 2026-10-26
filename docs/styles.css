@@ -11,7 +11,6 @@ html{scroll-behavior:smooth}
 body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:linear-gradient(180deg,#fff7f9 0%,#fdf0f3 42%,#ffffff 100%);color:var(--ink);line-height:1.6}
 a{color:var(--red)}
 header{padding:26px 20px 6px;max-width:1120px;margin:0 auto}
-.banner{background:var(--red-dark);color:#fff;padding:12px 16px;border-radius:14px;font-weight:800;text-align:center;letter-spacing:.2px;box-shadow:0 10px 24px rgba(159,18,57,.22)}
 .eyebrow{margin:22px 0 2px;color:var(--red);font-weight:800;letter-spacing:.14em;text-transform:uppercase;font-size:.78rem}
 h1{font-size:clamp(2rem,4.6vw,3.1rem);line-height:1.08;margin:6px 0 10px;letter-spacing:-.02em}
 h1 span{color:var(--red)}
