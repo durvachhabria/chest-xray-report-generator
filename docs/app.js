@@ -222,5 +222,4 @@ document.getElementById("clearUpload").addEventListener("click", () => {
   document.getElementById("uploadCaseBtn").style.display = "none";
   render("A");
 });
-document.getElementById("labelLineTop").textContent = LABEL;
 render("A");
