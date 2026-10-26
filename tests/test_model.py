@@ -14,6 +14,7 @@ from model import (
     DEMO_CASES,
     NOT_FOR_CLINICAL_USE,
     generate_report,
+    generate_upload_report,
     gradcam_region_check,
     model_info,
     self_consistency_score,
@@ -78,6 +79,17 @@ class TestDemoCases(unittest.TestCase):
         self.assertEqual(self_consistency_score(DEMO_CASES["C"]), 0.4)
         self.assertTrue(gradcam_region_check(DEMO_CASES["B"])["passed"])
         self.assertFalse(gradcam_region_check(DEMO_CASES["C"])["passed"])
+
+    def test_upload_routes_to_mandatory_review_with_no_finding(self):
+        report = generate_upload_report("test.png")
+        self.assertEqual(report["status"], "MANDATORY RADIOLOGIST REVIEW")
+        self.assertTrue(report["routed_to_mandatory_review"])
+        self.assertIsNone(report["final_report"])
+        self.assertFalse(report["auto_emitted"])
+        self.assertIn("No finding determined", report["draft_impression"])
+        self.assertIsNone(report["self_consistency_score"])
+        self.assertFalse(report["entity_check"]["passed"])
+        self.assertFalse(report["gradcam_check"]["passed"])
 
     def test_unknown_case_raises(self):
         with self.assertRaises(ValueError):
