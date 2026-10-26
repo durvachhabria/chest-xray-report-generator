@@ -1,0 +1,55 @@
+:root{
+  --bg:#0b1220; --panel:#111c30; --panel2:#0f1a2e; --line:#24344f;
+  --text:#e8eef8; --muted:#9fb0c8; --teal:#2dd4bf; --blue:#60a5fa;
+  --amber:#fbbf24; --red:#f87171; --green:#34d399;
+  --radius:16px;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(1200px 600px at 20% -10%,#123 0%,var(--bg) 55%);color:var(--text);line-height:1.55}
+a{color:var(--blue)}
+header{padding:28px 20px 8px;max-width:1100px;margin:0 auto}
+.banner{background:#3b1010;border:1px solid #7f1d1d;color:#fecaca;padding:12px 16px;border-radius:12px;font-weight:700;text-align:center;letter-spacing:.2px}
+h1{font-size:clamp(1.7rem,4vw,2.6rem);line-height:1.15;margin:18px 0 6px}
+.sub{color:var(--muted);max-width:820px}
+main{max-width:1100px;margin:0 auto;padding:20px}
+.card{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:var(--radius);padding:20px;margin:18px 0;box-shadow:0 12px 30px rgba(0,0,0,.25)}
+h2{margin-top:0;font-size:1.35rem}
+h3{margin-bottom:6px}
+.muted{color:var(--muted)}
+.small{font-size:.9rem}
+.casebar{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
+button{cursor:pointer;border:1px solid var(--line);background:#16233d;color:var(--text);padding:10px 14px;border-radius:999px;font-weight:600;transition:transform .15s ease,background .2s ease,border-color .2s ease}
+button:hover{transform:translateY(-1px);background:#1d2f52}
+button.active{background:var(--teal);color:#06281f;border-color:var(--teal)}
+button.secondary{background:transparent}
+.grid{display:grid;grid-template-columns:1.05fr .95fr;gap:20px}
+@media(max-width:800px){.grid{grid-template-columns:1fr}}
+.schematic{background:#081020;border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}
+.schematic svg{width:100%;max-width:420px;height:auto;display:block;margin:0 auto}
+.heat{opacity:0;transition:opacity .5s ease}
+.heat.on{opacity:.9}
+.pipeline{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:14px 0}
+.stage{padding:8px 11px;border-radius:999px;border:1px solid var(--line);background:#0e1a30;color:var(--muted);font-size:.88rem;opacity:.55;transform:translateY(4px);transition:all .45s ease}
+.stage.active{opacity:1;transform:translateY(0);background:#123a3a;color:#d1fae5;border-color:var(--teal)}
+.stage.fail{opacity:1;background:#3b1010;color:#fecaca;border-color:var(--red)}
+.stage.done{opacity:1;color:var(--text)}
+.arrow{color:var(--muted)}
+.fade{animation:fadeSlide .55s ease both}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+.running{animation:pulse 1.2s ease infinite}
+.check{display:flex;justify-content:space-between;gap:12px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;margin:8px 0;background:#0c1729}
+.pass{color:var(--green);font-weight:800}
+.fail{color:var(--red);font-weight:800}
+.status{font-size:1.15rem;font-weight:800;padding:12px 14px;border-radius:12px;margin:12px 0}
+.status.ready{background:#06382e;color:#a7f3d0;border:1px solid var(--green)}
+.status.review{background:#3b1010;color:#fecaca;border:1px solid var(--red)}
+.counters{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+@media(max-width:600px){.counters{grid-template-columns:1fr}}
+.stat{background:#0c1729;border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}
+.stat b{font-size:1.6rem;display:block}
+.tag{display:inline-block;background:#1e293b;border:1px solid var(--line);border-radius:999px;padding:3px 9px;font-size:.8rem;margin:2px}
+.entity{display:flex;justify-content:space-between;gap:10px;padding:8px 10px;border-bottom:1px solid #1e293b}
+pre{background:#081020;border:1px solid var(--line);border-radius:12px;padding:14px;overflow:auto;color:#dbeafe}
+.upload{border:1px dashed var(--line);border-radius:12px;padding:14px}
+footer{max-width:1100px;margin:0 auto;padding:10px 20px 30px;color:var(--muted)}
